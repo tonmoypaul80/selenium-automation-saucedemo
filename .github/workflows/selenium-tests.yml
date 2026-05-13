@@ -74,3 +74,10 @@ jobs:
         with:
           name: allure-report
           path: target/allure-results
+          
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report
+          path: target/site/allure-maven-plugin
