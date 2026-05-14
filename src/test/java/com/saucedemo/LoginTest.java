@@ -38,7 +38,7 @@ public class LoginTest {
     }
     @Test(priority = 1)
     @Severity(SeverityLevel.BLOCKER)
-    @Description("Verify valid login for SauceDemo")
+    @Description("TC001 - Valid password দিয়ে login")
     public void validLoginTest() throws InterruptedException {
         driver.findElement(By.id("user-name")).sendKeys("standard_user");
         driver.findElement(By.id("password")).sendKeys("secret_sauce");
@@ -50,6 +50,25 @@ public class LoginTest {
         // ভেরিফাই করছি যে আমরা প্রোডাক্ট পেজে পৌঁছেছি কিনা
         String expectedUrl = "https://www.saucedemo.com/inventory.html";
         Assert.assertEquals(driver.getCurrentUrl(), expectedUrl, "Login failed!");
+    }
+
+    //TC002 - Invalid password দিয়ে login
+    @Test(priority = 1)
+    @Severity(SeverityLevel.BLOCKER)
+    @Description("TC002 - Invalid password দিয়ে login")
+    public void invalidLoginTest()throws InterruptedException{
+
+        driver.findElement(By.id("user-name")).sendKeys("standard_user");
+        driver.findElement(By.id("password")).sendKeys("invalid_secret_sauce");
+
+        Thread.sleep(2000); 
+        driver.findElement(By.id("login-button")).click();
+
+        Thread.sleep(2000); 
+        // ভেরিফাই করছি যে আমরা প্রোডাক্ট পেজে পৌঁছেছি কিনা
+        String expectedUrl = "https://www.saucedemo.com";
+        Assert.assertEquals(driver.getCurrentUrl(), expectedUrl, "Invalid password allowed user to log in!");
+
     }
 
     @AfterMethod
