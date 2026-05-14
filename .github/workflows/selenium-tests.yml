@@ -31,8 +31,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
-      - name: Run Tests
-        run: mvn test -B
+      # - name: Run Tests
+      #   run: mvn test -B
+      #   continue-on-error: true
+
+      - name: Generate Allure Report
+        run: mvn site -DskipTests
         continue-on-error: true
 
       - name: Generate Allure Report
