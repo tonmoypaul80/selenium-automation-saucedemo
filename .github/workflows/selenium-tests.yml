@@ -68,9 +68,18 @@ jobs:
           path: target/surefire-reports
 
       # [নতুন স্টেপ]: জেনারেট হওয়া অলুর রিপোর্টটি সরাসরি gh-pages ব্রাঞ্চে পাবলিশ করবে
+      # - name: Deploy Allure Report to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   if: always()
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: target/site/allure-maven-plugin # এই ফোল্ডারের ফাইলগুলোই লাইভ ওয়েবসাইট হবে
+
+      # [নতুন ও চূড়ান্ত স্টেপ]: এটি আপনার অলুর সমস্ত ফাইনাল HTML ফাইল সরাসরি gh-pages ব্রাঞ্চের রুটে পাঠাবে
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/site/allure-maven-plugin # এই ফোল্ডারের ফাইলগুলোই লাইভ ওয়েবসাইট হবে
+          publish_dir: target/site/allure-maven-plugin
+          keep_files: false
