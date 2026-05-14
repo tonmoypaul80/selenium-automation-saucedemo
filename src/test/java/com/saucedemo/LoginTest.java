@@ -65,7 +65,6 @@ public class LoginTest {
         driver.findElement(By.id("login-button")).click();
 
         Thread.sleep(2000); 
-        // ভেরিফাই করছি যে আমরা প্রোডাক্ট পেজে পৌঁছেছি কিনা
         String expectedUrl = "https://www.saucedemo.com";
         Assert.assertEquals(driver.getCurrentUrl(), expectedUrl, "Invalid password allowed user to log in!");
 
