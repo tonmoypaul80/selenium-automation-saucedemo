@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -12,6 +14,8 @@ import org.testng.annotations.Test;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
+import java.time.Duration;
+
 
 
 public class LoginTest {
@@ -36,42 +40,47 @@ public class LoginTest {
         driver.get("https://www.saucedemo.com/");
 
     }
-    @Test(priority = 1)
-    @Severity(SeverityLevel.BLOCKER)
-    @Description("TC001 - Valid password দিয়ে login")
-    public void validLoginTest() throws InterruptedException {
-        driver.findElement(By.id("user-name")).sendKeys("standard_user");
+@Test(priority = 1)
+@Severity(SeverityLevel.BLOCKER)
+@Description("TC001 - Valid password login")
+    public void validLoginTest() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("user-name")))
+            .sendKeys("standard_user");
+
         driver.findElement(By.id("password")).sendKeys("secret_sauce");
-        
-        Thread.sleep(2000); 
         driver.findElement(By.id("login-button")).click();
 
-        Thread.sleep(2000); 
-        // ভেরিফাই করছি যে আমরা প্রোডাক্ট পেজে পৌঁছেছি কিনা
-        String expectedUrl = "https://www.saucedemo.com/inventory.html";
-        Assert.assertEquals(driver.getCurrentUrl(), expectedUrl, "Login failed!");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("inventory_list")));
+        Assert.assertTrue(
+            driver.findElement(By.className("inventory_list")).isDisplayed(),
+            "Login failed - Product page did not load!"
+        );
     }
 
-    //TC002 - Invalid password দিয়ে login
-    @Test(priority = 1)
+    @Test(priority = 2)
     @Severity(SeverityLevel.BLOCKER)
-    @Description("TC002 - Invalid password দিয়ে login")
-    public void invalidLoginTest()throws InterruptedException{
+    @Description("TC002 - Invalid password login")
+    public void invalidLoginTest() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.findElement(By.id("user-name")).sendKeys("standard_user");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("user-name")))
+            .sendKeys("standard_user");
         driver.findElement(By.id("password")).sendKeys("invalid_secret_sauce");
-
-        Thread.sleep(2000); 
         driver.findElement(By.id("login-button")).click();
 
-        Thread.sleep(2000); 
-        String expectedUrl = "https://www.saucedemo.com";
-        Assert.assertEquals(driver.getCurrentUrl(), expectedUrl, "Invalid password allowed user to log in!");
-
+        // Error message visible কিনা assert করো
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-test='error']")));
+        Assert.assertTrue(
+            driver.findElement(By.cssSelector("[data-test='error']")).isDisplayed(),
+            "Error message not shown for invalid login!"
+        );
     }
 
     @AfterMethod
-    public void tearDown() {
+    public void tearDown() throws InterruptedException {
+         Thread.sleep(2000); // Only to see not for production
         if (driver != null) {
             driver.quit();
         }
